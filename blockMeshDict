@@ -1,0 +1,309 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+wavelength 3.237532399;
+perWavelength 80;
+perVerticalDirection 25;
+
+// coortinates
+x0 -7.50;   // inlet
+x1 -1.00;   // head of the body
+x2  1.00;   // tail of the body
+x3  9.71;   // outlet (will be extruded by extrudeMesh) // #calc "3 * $wavelength";
+
+y0 -0.14;   // left side of the domain
+y1  0.14;   // right side of the domain
+
+z0 -2.50;   // bottom of the domain
+z1 -0.15;   // bottom of the wave zone
+z2 -0.10;   // #calc "-0.025 - 0.15*0.5"; // bottom of the body
+z3  0.05;   // #calc "-0.025 + 0.15*0.5"; // top of the body
+z4  0.10;   // top of the wave zone
+z5  2.50;   // atmospehere
+
+// divisions 
+nx1 #calc "ceil(($x1 - $x0) / $wavelength * $perWavelength)";
+nx2 #calc "ceil(($x2 - $x1) / $wavelength * $perWavelength)";
+nx3 #calc "ceil(($x3 - $x2) / $wavelength * $perWavelength)";
+
+ny1 1;
+
+nz1 #codeStream
+{
+    code
+    #{
+        scalar targetLength = $z1 - $z0;
+        scalar expansionRatio = 1.2;
+        scalar minDeltaX = ($z4 - $z1) / $perVerticalDirection;
+        label nGrid = 0;
+        scalar currentLength = 0;
+        scalar x = minDeltaX;
+        for (nGrid; currentLength < targetLength; nGrid++)
+        {
+            x = minDeltaX * pow(expansionRatio,nGrid);
+            currentLength += x;
+        }
+        os << nGrid-1;
+    #};
+};
+nz2 #calc "ceil(($z2 - $z1) / ($z4 - $z1) * $perVerticalDirection)";
+nz3 #calc "ceil(($z3 - $z2) / ($z4 - $z1) * $perVerticalDirection)";
+nz4 #calc "ceil(($z4 - $z3) / ($z4 - $z1) * $perVerticalDirection)";
+nz5 #codeStream
+{
+    code
+    #{
+        scalar targetLength = $z5 - $z4;
+        scalar expansionRatio = 1.2;
+        scalar minDeltaX = ($z4 - $z1) / $perVerticalDirection;
+        label nGrid = 0;
+        scalar currentLength = 0;
+        scalar x = minDeltaX;
+        for (nGrid; currentLength < targetLength; nGrid++)
+        {
+            x = minDeltaX * pow(expansionRatio,nGrid);
+            currentLength += x;
+        }
+        os << nGrid-1;
+
+    #};
+};
+
+// gradings 
+gx1 1;
+gx2 1;
+gx3 1;
+gx4 1;
+
+gy1 1;
+
+gz1 #codeStream
+{
+    code
+    #{
+        scalar targetLength = $z5 - $z4;
+        scalar expansionRatio = 1.2;
+        scalar minDeltaX = ($z4 - $z1) / $perVerticalDirection;
+        label nGrid = 0;
+        scalar currentLength = 0;
+        scalar x = minDeltaX;
+        for (nGrid; currentLength < targetLength; nGrid++)
+        {
+            x = minDeltaX * pow(expansionRatio,nGrid);
+            currentLength += x;
+        }
+        os << 1 / pow(expansionRatio,nGrid-1);
+    #};
+};
+gz2 1;
+gz3 1;
+gz4 1;
+gz5 #codeStream
+{
+    code
+    #{
+        scalar targetLength = $z5 - $z4;
+        scalar expansionRatio = 1.2;
+        scalar minDeltaX = ($z4 - $z1) / $perVerticalDirection;
+        label nGrid = 0;
+        scalar currentLength = 0;
+        scalar x = minDeltaX;
+        for (nGrid; currentLength < targetLength; nGrid++)
+        {
+            x = minDeltaX * pow(expansionRatio,nGrid);
+            currentLength += x;
+        }
+        os << pow(expansionRatio,nGrid-1);
+    #};
+};
+
+convertToMeters 1;
+
+vertices
+(
+    name v000 ( $x0 $y0 $z0 )
+    name v100 ( $x1 $y0 $z0 )
+    name v200 ( $x2 $y0 $z0 )
+    name v300 ( $x3 $y0 $z0 )
+    name v010 ( $x0 $y1 $z0 )
+    name v110 ( $x1 $y1 $z0 )
+    name v210 ( $x2 $y1 $z0 )
+    name v310 ( $x3 $y1 $z0 )
+    name v001 ( $x0 $y0 $z1 )
+    name v101 ( $x1 $y0 $z1 )
+    name v201 ( $x2 $y0 $z1 )
+    name v301 ( $x3 $y0 $z1 )
+    name v011 ( $x0 $y1 $z1 )
+    name v111 ( $x1 $y1 $z1 )
+    name v211 ( $x2 $y1 $z1 )
+    name v311 ( $x3 $y1 $z1 )
+    name v002 ( $x0 $y0 $z2 )
+    name v102 ( $x1 $y0 $z2 )
+    name v202 ( $x2 $y0 $z2 )
+    name v302 ( $x3 $y0 $z2 )
+    name v012 ( $x0 $y1 $z2 )
+    name v112 ( $x1 $y1 $z2 )
+    name v212 ( $x2 $y1 $z2 )
+    name v312 ( $x3 $y1 $z2 )
+    name v003 ( $x0 $y0 $z3 )
+    name v103 ( $x1 $y0 $z3 )
+    name v203 ( $x2 $y0 $z3 )
+    name v303 ( $x3 $y0 $z3 )
+    name v013 ( $x0 $y1 $z3 )
+    name v113 ( $x1 $y1 $z3 )
+    name v213 ( $x2 $y1 $z3 )
+    name v313 ( $x3 $y1 $z3 )
+    name v004 ( $x0 $y0 $z4 )
+    name v104 ( $x1 $y0 $z4 )
+    name v204 ( $x2 $y0 $z4 )
+    name v304 ( $x3 $y0 $z4 )
+    name v014 ( $x0 $y1 $z4 )
+    name v114 ( $x1 $y1 $z4 )
+    name v214 ( $x2 $y1 $z4 )
+    name v314 ( $x3 $y1 $z4 )
+    name v005 ( $x0 $y0 $z5 )
+    name v105 ( $x1 $y0 $z5 )
+    name v205 ( $x2 $y0 $z5 )
+    name v305 ( $x3 $y0 $z5 )
+    name v015 ( $x0 $y1 $z5 )
+    name v115 ( $x1 $y1 $z5 )
+    name v215 ( $x2 $y1 $z5 )
+    name v315 ( $x3 $y1 $z5 )
+);
+
+blocks
+(
+    name b000 hex ( v000 v100 v110 v010 v001 v101 v111 v011 ) ( $nx1 $ny1 $nz1 ) simpleGrading ( $gx1 $gy1 $gz1 )
+    name b100 hex ( v100 v200 v210 v110 v101 v201 v211 v111 ) ( $nx2 $ny1 $nz1 ) simpleGrading ( $gx2 $gy1 $gz1 )
+    name b200 hex ( v200 v300 v310 v210 v201 v301 v311 v211 ) ( $nx3 $ny1 $nz1 ) simpleGrading ( $gx3 $gy1 $gz1 )
+    name b001 hex ( v001 v101 v111 v011 v002 v102 v112 v012 ) ( $nx1 $ny1 $nz2 ) simpleGrading ( $gx1 $gy1 $gz2 )
+    name b101 hex ( v101 v201 v211 v111 v102 v202 v212 v112 ) ( $nx2 $ny1 $nz2 ) simpleGrading ( $gx2 $gy1 $gz2 )
+    name b201 hex ( v201 v301 v311 v211 v202 v302 v312 v212 ) ( $nx3 $ny1 $nz2 ) simpleGrading ( $gx3 $gy1 $gz2 )
+    name b002 hex ( v002 v102 v112 v012 v003 v103 v113 v013 ) ( $nx1 $ny1 $nz3 ) simpleGrading ( $gx1 $gy1 $gz3 )
+    name b102 hex ( v102 v202 v212 v112 v103 v203 v213 v113 ) ( $nx2 $ny1 $nz3 ) simpleGrading ( $gx2 $gy1 $gz3 )
+    name b202 hex ( v202 v302 v312 v212 v203 v303 v313 v213 ) ( $nx3 $ny1 $nz3 ) simpleGrading ( $gx3 $gy1 $gz3 )
+    name b003 hex ( v003 v103 v113 v013 v004 v104 v114 v014 ) ( $nx1 $ny1 $nz4 ) simpleGrading ( $gx1 $gy1 $gz4 )
+    name b103 hex ( v103 v203 v213 v113 v104 v204 v214 v114 ) ( $nx2 $ny1 $nz4 ) simpleGrading ( $gx2 $gy1 $gz4 )
+    name b203 hex ( v203 v303 v313 v213 v204 v304 v314 v214 ) ( $nx3 $ny1 $nz4 ) simpleGrading ( $gx3 $gy1 $gz4 )
+    name b004 hex ( v004 v104 v114 v014 v005 v105 v115 v015 ) ( $nx1 $ny1 $nz5 ) simpleGrading ( $gx1 $gy1 $gz5 )
+    name b104 hex ( v104 v204 v214 v114 v105 v205 v215 v115 ) ( $nx2 $ny1 $nz5 ) simpleGrading ( $gx2 $gy1 $gz5 )
+    name b204 hex ( v204 v304 v314 v214 v205 v305 v315 v215 ) ( $nx3 $ny1 $nz5 ) simpleGrading ( $gx3 $gy1 $gz5 )
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            ( v000 v010 v011 v001 )
+            ( v001 v011 v012 v002 )
+            ( v002 v012 v013 v003 )
+            ( v003 v013 v014 v004 )
+            ( v004 v014 v015 v005 )
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            ( v300 v310 v311 v301 )
+            ( v301 v311 v312 v302 )
+            ( v302 v312 v313 v303 )
+            ( v303 v313 v314 v304 )
+            ( v304 v314 v315 v305 )
+        );
+    }
+    left
+    {
+        type empty;
+        faces
+        (
+            ( v000 v100 v101 v001 )
+            ( v100 v200 v201 v101 )
+            ( v200 v300 v301 v201 )
+            ( v001 v101 v102 v002 )
+            ( v101 v201 v202 v102 )
+            ( v201 v301 v302 v202 )
+            ( v002 v102 v103 v003 )
+            ( v102 v202 v203 v103 )
+            ( v202 v302 v303 v203 )
+            ( v003 v103 v104 v004 )
+            ( v103 v203 v204 v104 )
+            ( v203 v303 v304 v204 )
+            ( v004 v104 v105 v005 )
+            ( v104 v204 v205 v105 )
+            ( v204 v304 v305 v205 )
+        );
+    }
+    right
+    {
+        type empty;
+        faces
+        (
+            ( v010 v110 v111 v011 )
+            ( v110 v210 v211 v111 )
+            ( v210 v310 v311 v211 )
+            ( v011 v111 v112 v012 )
+            ( v111 v211 v212 v112 )
+            ( v211 v311 v312 v212 )
+            ( v012 v112 v113 v013 )
+            ( v112 v212 v213 v113 )
+            ( v212 v312 v313 v213 )
+            ( v013 v113 v114 v014 )
+            ( v113 v213 v214 v114 )
+            ( v213 v313 v314 v214 )
+            ( v014 v114 v115 v015 )
+            ( v114 v214 v215 v115 )
+            ( v214 v314 v315 v215 )
+        );
+    }
+    bottom
+    {
+        type wall;
+        faces
+        (
+            ( v000 v100 v110 v010 )
+            ( v100 v200 v210 v110 )
+            ( v200 v300 v310 v210 )
+        );
+    }
+    top
+    {
+        type patch;
+        faces
+        (
+            ( v005 v105 v115 v015 )
+            ( v105 v205 v215 v115 )
+            ( v205 v305 v315 v215 )
+        );
+    }
+    floatingObject
+    {
+        type wall;
+        faces
+        (
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //
