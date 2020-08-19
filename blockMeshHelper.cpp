@@ -5,6 +5,59 @@ using namespace std;
 int globalX, globalY, globalZ;
 
 
+void genCoordinates()
+{
+	for (int x = 0; x < globalX; x++)
+	{
+		cout << "x" << x << " 1;" << endl;
+	}
+	for (int y = 0; y < globalY; y++)
+	{
+		cout << "y" << y << " 1;" << endl;
+	}
+	for (int z = 0; z < globalZ; z++)
+	{
+		cout << "z" << z << " 1;" << endl;
+	}
+	cout << endl;
+}
+
+
+void genDimensions()
+{
+	for (int x = 1; x < globalX; x++)
+	{
+		cout << "nx" << x << " 1;" << endl;
+	}
+	for (int y = 1; y < globalY; y++)
+	{
+		cout << "ny" << y << " 1;" << endl;
+	}
+	for (int z = 1; z < globalZ; z++)
+	{
+		cout << "nz" << z << " 1;" << endl;
+	}
+	cout << endl;
+}
+
+
+void genGradings()
+{
+	for (int x = 1; x < globalX; x++)
+	{
+		cout << "gx" << x << " 1;" << endl;
+	}
+	for (int y = 1; y < globalY; y++)
+	{
+		cout << "gy" << y << " 1;" << endl;
+	}
+	for (int z = 1; z < globalZ; z++)
+	{
+		cout << "gz" << z << " 1;" << endl;
+	}
+	cout << endl;
+}
+
 void genVertices()
 {
 	cout << "vertices" << endl;
@@ -86,7 +139,7 @@ void genBoundary(string name, string type)
 	cout << "        type " << type << ";" << endl;
 	cout << "        faces" << endl;
 	cout << "        (" << endl;
-	if (name == "inlet")
+	if (name == "west")
 	{
  		for (int z = 0; z < globalZ-1; z++)
  		{
@@ -103,7 +156,7 @@ void genBoundary(string name, string type)
  			}
  		}
 	}
-	else if (name == "outlet")
+	else if (name == "east")
 	{
  		for (int z = 0; z < globalZ-1; z++)
  		{
@@ -120,7 +173,7 @@ void genBoundary(string name, string type)
  			}
  		}
 	}
-	else if (name == "left")
+	else if (name == "south")
 	{
  		for (int z = 0; z < globalZ-1; z++)
  		{
@@ -137,7 +190,7 @@ void genBoundary(string name, string type)
  			}
  		}
 	}
-	else if (name == "right")
+	else if (name == "north")
 	{
  		for (int z = 0; z < globalZ-1; z++)
  		{
@@ -199,13 +252,13 @@ void genBoundary(string name, string type)
 void genBoundaries()
 {	cout << "boundary" << endl;
 	cout << "(" << endl;
-		genBoundary("inlet", "patch");
-		genBoundary("outlet", "patch");
-		genBoundary("left", "empty");
-		genBoundary("right", "empty");
-		genBoundary("bottom", "wall");
-		genBoundary("top", "patch");
-		genBoundary("floatingObject", "wall");
+		genBoundary("west",   "patch"); // x = xmin;
+		genBoundary("east",   "patch"); // x = xmax;
+		genBoundary("south",  "patch"); // y = ymin;
+		genBoundary("north",  "patch"); // y = ymax;
+		genBoundary("bottom", "patch"); // z = zmin;
+		genBoundary("top",    "patch"); // z = zmax;
+		genBoundary("wall",   "patch");
 	cout << ");" << endl;
 	cout << endl;
 }
@@ -223,6 +276,12 @@ int main(int argc, char const *argv[])
 	globalX = stoi(argv[1]);
 	globalY = stoi(argv[2]);
 	globalZ = stoi(argv[3]);
+
+	genCoordinates();
+	
+	genDimensions();
+	
+	genGradings();
 
     genVertices();
 
