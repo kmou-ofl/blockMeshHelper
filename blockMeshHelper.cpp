@@ -9,15 +9,15 @@ void genCoordinates()
 {
 	for (int x = 0; x < globalX; x++)
 	{
-		cout << "x" << x << " 1;" << endl;
+		cout << "x" << x << " " << x << ";" << endl;
 	}
 	for (int y = 0; y < globalY; y++)
 	{
-		cout << "y" << y << " 1;" << endl;
+		cout << "y" << y << " " << y << ";" << endl;
 	}
 	for (int z = 0; z < globalZ; z++)
 	{
-		cout << "z" << z << " 1;" << endl;
+		cout << "z" << z << " " << z << ";" << endl;
 	}
 	cout << endl;
 }
@@ -68,8 +68,8 @@ void genVertices()
 		{
 			for (int x = 0; x < globalX; x++)
 			{
-				cout << "    name v"
-					 << x << y << z
+				cout << "    name v."
+					 << "x" << x << "y" << y << "z" << z
 					 << " ("
 						 << " $x" << x
 						 << " $y" << y
@@ -94,18 +94,18 @@ void genBlocks()
 		{
 			for (int x = 0; x < globalX - 1; x++)
 			{
-				cout << "    name b"
-					 << x << y << z
+				cout << "    name b."
+					 << "x" << x << "y" << y << "z" << z
 					 << " hex"
 					 << " ("
-						 << " v" << x   << y   << z
-						 << " v" << x+1 << y   << z
-						 << " v" << x+1 << y+1 << z
-						 << " v" << x   << y+1 << z
-						 << " v" << x   << y   << z+1
-						 << " v" << x+1 << y   << z+1
-						 << " v" << x+1 << y+1 << z+1
-						 << " v" << x   << y+1 << z+1
+						 << " v." << "x" << x   << "y" << y   << "z" << z
+						 << " v." << "x" << x+1 << "y" << y   << "z" << z
+						 << " v." << "x" << x+1 << "y" << y+1 << "z" << z
+						 << " v." << "x" << x   << "y" << y+1 << "z" << z
+						 << " v." << "x" << x   << "y" << y   << "z" << z+1
+						 << " v." << "x" << x+1 << "y" << y   << "z" << z+1
+						 << " v." << "x" << x+1 << "y" << y+1 << "z" << z+1
+						 << " v." << "x" << x   << "y" << y+1 << "z" << z+1
 					 << " )"
 					 << " ("
 					 	<< " $nx" << x+1
@@ -147,10 +147,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-						 << " v" << "0" << y   << z
-						 << " v" << "0" << y+1 << z
-						 << " v" << "0" << y+1 << z+1
-						 << " v" << "0" << y   << z+1
+						 << " v." << "x" << "0" << "y" << y   << "z" << z
+						 << " v." << "x" << "0" << "y" << y+1 << "z" << z
+						 << " v." << "x" << "0" << "y" << y+1 << "z" << z+1
+						 << " v." << "x" << "0" << "y" << y   << "z" << z+1
 						 << " )"
 						 << endl;
  			}
@@ -164,10 +164,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-							 << " v" << globalX-1 << y   << z
-							 << " v" << globalX-1 << y+1 << z
-							 << " v" << globalX-1 << y+1 << z+1
-							 << " v" << globalX-1 << y   << z+1
+							 << " v." << "x" << globalX-1 << "y" << y   << "z" << z
+							 << " v." << "x" << globalX-1 << "y" << y+1 << "z" << z
+							 << " v." << "x" << globalX-1 << "y" << y+1 << "z" << z+1
+							 << " v." << "x" << globalX-1 << "y" << y   << "z" << z+1
 						 << " )"
 						 << endl;
  			}
@@ -181,10 +181,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-							 << " v" << x   << "0" << z
-							 << " v" << x+1 << "0" << z
-							 << " v" << x+1 << "0" << z+1
-							 << " v" << x   << "0" << z+1
+							 << " v." << "x" << x   << "y" << "0" << "z" << z
+							 << " v." << "x" << x+1 << "y" << "0" << "z" << z
+							 << " v." << "x" << x+1 << "y" << "0" << "z" << z+1
+							 << " v." << "x" << x   << "y" << "0" << "z" << z+1
 						 << " )"
 						 << endl;
  			}
@@ -198,10 +198,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-							 << " v" << x   << globalY-1 << z
-							 << " v" << x+1 << globalY-1 << z
-							 << " v" << x+1 << globalY-1 << z+1
-							 << " v" << x   << globalY-1 << z+1
+							 << " v." << "x" << x   << "y" << globalY-1 << "z" << z
+							 << " v." << "x" << x+1 << "y" << globalY-1 << "z" << z
+							 << " v." << "x" << x+1 << "y" << globalY-1 << "z" << z+1
+							 << " v." << "x" << x   << "y" << globalY-1 << "z" << z+1
 						 << " )"
 						 << endl;
  			}
@@ -215,10 +215,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-							 << " v" << x   << y   << "0"
-							 << " v" << x+1 << y   << "0"
-							 << " v" << x+1 << y+1 << "0"
-							 << " v" << x   << y+1 << "0"
+							 << " v." << "x" << x   << "y" << y   << "z" << "0"
+							 << " v." << "x" << x+1 << "y" << y   << "z" << "0"
+							 << " v." << "x" << x+1 << "y" << y+1 << "z" << "0"
+							 << " v." << "x" << x   << "y" << y+1 << "z" << "0"
 						 << " )"
 						 << endl;
  			}
@@ -232,10 +232,10 @@ void genBoundary(string name, string type)
  			{
 					cout << "            "
 						 << "("
-							 << " v" << x   << y   << globalZ-1
-							 << " v" << x+1 << y   << globalZ-1
-							 << " v" << x+1 << y+1 << globalZ-1
-							 << " v" << x   << y+1 << globalZ-1
+							 << " v." << "x" << x   << "y" << y   << "z" << globalZ-1
+							 << " v." << "x" << x+1 << "y" << y   << "z" << globalZ-1
+							 << " v." << "x" << x+1 << "y" << y+1 << "z" << globalZ-1
+							 << " v." << "x" << x   << "y" << y+1 << "z" << globalZ-1
 						 << " )"
 						 << endl;
  			}
